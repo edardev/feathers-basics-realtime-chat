@@ -44,7 +44,7 @@ app.use('/messages', new MessageService());
 app.use(express.errorHandler());
 
 //Add any new real-time connection to the 'everybody' channel
-app.on('connnection', connection =>
+app.on('connection', connection =>
     app.channel('everybody').join(connection) 
 );
 
@@ -54,16 +54,16 @@ app.publish(data => app.channel('everybody'));
 //Start the server
 app.listen(3030).on('listening', ()=>
     console.log(
-        'Feathers server listening on localhost:3030' + '\n' +
-        'Visit -> http://localhost:3030/messages to see an array with the messages we created on the server'
+        'Feathers real-time server listening on http://localhost:3030 \nTo see an array with the messages we created on the server http://localhost:3030/messages'
     )
 );
-
 
 // For good measure let's create a message so our API doesn't look empty
 app.service('messages').create({
     text: 'Hello Edward from the server'
-})
+});
+
+
 
 
 
@@ -72,7 +72,7 @@ app.service('messages').create({
 // // Register the message service  on the Feathers application
 // app.use('messages', new MessageService())
 
-// // Log every time a new message has been created
+// Log every time a new message has been created
 // app.service('messages').on('created', message => {
 //     console.log('A new message has been created', message);
 // })
