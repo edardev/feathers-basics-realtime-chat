@@ -2,28 +2,36 @@ const feathers = require('@feathersjs/feathers');
 const express = require('@feathersjs/express');
 const socketio = require('@feathersjs/socketio');
 
-//A messages service that allow to create new ans return all existing messages.
-class MessageService {
-    constructor() {
-        this.messages = [];
-    }
-    async find () {
-        //Just return all messages
-        return this.messages;
-    }
-    async create (data) {
-        // The new message is the data merged with a unique idetifier
-        // using the messages length since it chages whenever we add one
-        const message = {
-            id: this.messages.length,
-            text: data.text
-        }
-        // Add a new message to the list
-        this.messages.push(message);
+const NeDB = require('nedb');
+const service = require('feathers-nedb');
 
-        return message;
-    }
-}
+const db = new NeDB({
+    filename: './db-data/messages',
+    autoload: true
+  });
+
+//A messages service that allow to create new ans return all existing messages.
+// class MessageService {
+//     constructor() {
+//         this.messages = [];
+//     }
+//     async find () {
+//         //Just return all messages
+//         return this.messages;
+//     }
+//     async create (data) {
+//         // The new message is the data merged with a unique idetifier
+//         // using the messages length since it chages whenever we add one
+//         const message = {
+//             id: this.messages.length,
+//             text: data.text
+//         }
+//         // Add a new message to the list
+//         this.messages.push(message);
+
+//         return message;
+//     }
+// }
 
 // Create an ExpressJS compatible Feathers application
 const app = express(feathers());
@@ -39,7 +47,17 @@ app.configure(express.rest());
 // Configure Socket.io real time APIs
 app.configure(socketio());
 // Register and in-memory messages service
-app.use('/messages', new MessageService());
+// app.use('/messages', new MessageService());
+
+// Connect to the db, create and register a Feathers service.
+// app.use('/messages', service({ Model:db }));
+app.use('/messages', service({
+    Model: db,
+    // paginate: {
+    //   default: 2,
+    //   max: 4
+    // }
+  }));
 // Register a nicer error handler than the default Express one
 app.use(express.errorHandler());
 
@@ -60,12 +78,10 @@ app.listen(3030).on('listening', ()=>
 
 // For good measure let's create a message so our API doesn't look empty
 app.service('messages').create({
-    text: 'Hello Edward from the server'
-});
+    text: "Hello, I'm Edward from the Server"
+}).then(message => console.log('Created message', message));
 
-app.service('messages').on('created', message => {
-    console.log('A new message has been created', message);
-})
+
 
 
 
@@ -75,9 +91,9 @@ app.service('messages').on('created', message => {
 // app.use('messages', new MessageService())
 
 // Log every time a new message has been created
-// app.service('messages').on('created', message => {
-//     console.log('A new message has been created', message);
-// })
+app.service('messages').on('created', message => {
+    console.log('A new message has been created', message);
+})
 
 // // A function that creates new messages and then logs all existing messages
 // const main = async () => {

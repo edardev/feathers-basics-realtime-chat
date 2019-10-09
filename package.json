@@ -12,6 +12,8 @@
   "dependencies": {
     "@feathersjs/express": "^4.3.5",
     "@feathersjs/feathers": "^4.3.4",
-    "@feathersjs/socketio": "^4.3.5"
+    "@feathersjs/socketio": "^4.3.5",
+    "feathers-nedb": "^5.1.0",
+    "nedb": "^1.8.0"
   }
 }
