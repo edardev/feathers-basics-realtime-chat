@@ -14,8 +14,10 @@
       <input type="text" id="message-text" placeholder="Enter message here">
       <button type="submit" class="button button-primary">Send message</button>
     </form>
-
+    <h1><a href="http://192.168.1.77:3030/messages">Click here to see array of messages </a></h1> 
     <h2>Here are the current messages:</h2>
+    
+    <div id="messages-list"> </div>
   </main>
 
   <script src="//unpkg.com/@feathersjs/client@^4.3.0/dist/feathers.js"></script>
@@ -45,7 +47,8 @@
 
     // Renders a single message on the page
     function addMessage (message) {
-      document.getElementById('main').innerHTML += `<p>${message.text}</p>`;
+      document.getElementById('messages-list').innerHTML += `<p>${message.text}</p>`;
+      console.log(message.text)
     }
     
     const main = async () => {

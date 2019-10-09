@@ -63,7 +63,9 @@ app.service('messages').create({
     text: 'Hello Edward from the server'
 });
 
-
+app.service('messages').on('created', message => {
+    console.log('A new message has been created', message);
+})
 
 
 
